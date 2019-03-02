@@ -21,6 +21,7 @@ unsigned int const initial_brightness{50};
 unsigned int const dim{25};
 
 void setup() {
+  randomSeed(0);
   outline.begin();
   e_string.begin();
   b_string.begin();
@@ -39,6 +40,7 @@ void setup() {
 
 void loop() {
   auto const &current_outline_event = outline_events[outline_events_idx];
+  auto const &next_outline_event = outline_events[outline_events_idx + 1];
   auto const &current_fret_event = fret_events[fret_events_idx];
 
   if (current_fret_event.string_number == 1) {
@@ -63,66 +65,68 @@ void loop() {
   }
 
 
+  auto const current_outline_step = time_step - current_fret_event.onset;
+  auto const current_outline_duration = next_outline_event.onset - current_fret_event.onset;
   outline.setBrightness(initial_brightness);
   switch (current_outline_event.midi_number) {
     case 61: {
-      pulse(outline, 255, 0, 0);
+      pulse(outline, current_outline_step, current_outline_duration, 255, 0, 0, 4);
       break;
     }
     case 62: {
-      pulse(outline, 0, 255, 0);
+      pulse(outline, current_outline_step, current_outline_duration, 0, 255, 0, 4);
       break;
     }
     case 63: {
-      pulse(outline, 0, 0, 255);
+      pulse(outline, current_outline_step, current_outline_duration, 0, 0, 255, 4);
       break;
     }
     case 64: {
-      pulse(outline, 255, 255, 0);
+      pulse(outline, current_outline_step, current_outline_duration, 255, 255, 0, 4);
       break;
     }
     case 65: {
-      fade(outline, 255, 0, 0);
+      fade(outline, current_outline_step, current_outline_duration, 255, 0, 0);
       break;
     }
     case 66: {
-      fade(outline, 0, 255, 0);
+      fade(outline, current_outline_step, current_outline_duration, 0, 255, 0);
       break;
     }
     case 67: {
-      fade(outline, 0, 0, 255);
+      fade(outline, current_outline_step, current_outline_duration, 0, 0, 255);
       break;
     }
     case 68: {
-      fade(outline, 255, 255, 0);
+      fade(outline, current_outline_step, current_outline_duration, 255, 255, 0);
       break;
     }
     case 69: {
-      flair(outline, 255, 255, 0);
+      sparkle(outline, current_outline_step, current_outline_duration, 255, 255, 0, 16, 32);
       break;
     }
     case 70: {
-      rainbow_chaser(outline);
+      rainbow_chaser(outline, current_outline_step, current_outline_duration);
       break;
     }
     case 71: {
-      reverse_rainbow_chaser(outline);
+      reverse_rainbow_chaser(outline, current_outline_step, current_outline_duration);
       break;
     }
     case 72: {
-      sparkle(outline, 255, 0, 0);
+      flair(outline, current_outline_step, current_outline_duration, 255, 0, 0);
       break;
     }
     case 73: {
-      sparkle(outline, 0, 255, 0);
+      flair(outline, current_outline_step, current_outline_duration, 0, 255, 0);
       break;
     }
     case 74: {
-      sparkle(outline, 0, 0, 255);
+      flair(outline, current_outline_step, current_outline_duration, 0, 0, 255);
       break;
     }
     case 75: {
-      sparkle(outline, 255, 255, 0);
+      flair(outline, current_outline_step, current_outline_duration, 255, 255, 0);
       break;
     }
     case 76: {

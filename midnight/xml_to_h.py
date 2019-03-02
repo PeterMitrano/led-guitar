@@ -67,7 +67,7 @@ def main():
     args = parser.parse_args()
 
     seconds_per_quarter = 60.0 / args.bpm
-    dt_per_quarter = 16
+    dt_per_quarter = 32
     us_per_dt = int(seconds_per_quarter / dt_per_quarter * 1000)
 
     fret_events = []
@@ -88,6 +88,7 @@ def main():
     outline_part = score.parts[1].flat.stripTies()  # notated with a piano score
     for outline_note in outline_part.notes:
         outline_event = Event()
+        print(outline_note.quarterLength * dt_per_quarter)
         outline_event.onset = int(outline_note.getOffsetInHierarchy(score) * dt_per_quarter)
         outline_event.midi_number = outline_note.pitch.midi
         outline_events.append(outline_event)
