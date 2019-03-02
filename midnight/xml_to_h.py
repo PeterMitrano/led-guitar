@@ -44,7 +44,7 @@ def define_constant(vartype, name, value):
 def define_fret_events_array(events):
     definition = "FretEvent const fret_events[] = {\n"
     for e in events:
-        definition += "  FretEvent{" + "{}, {}, {}".format(e.onset, e.string_number, e.fret_number) + "},\n"
+        definition += "  FretEvent{" + "{}u, {}u, {}u".format(e.onset, e.string_number, e.fret_number) + "},\n"
     definition += "};"
     return definition
 
@@ -52,7 +52,7 @@ def define_fret_events_array(events):
 def define_outline_events_array(events):
     definition = "OutlineEvent const outline_events[] = {\n"
     for e in events:
-        definition += "  OutlineEvent{" + "{}, {}".format(e.onset, e.midi_number) + "},\n"
+        definition += "  OutlineEvent{" + "{}u, {}u".format(e.onset, e.midi_number) + "},\n"
     definition += "};"
     return definition
 
@@ -93,6 +93,7 @@ def main():
         outline_events.append(outline_event)
 
     with open(args.outfile, 'w') as outfile:
+        outfile.write('#include "util.h"\n')
         outfile.write(define_constant("unsigned int", "us_per_dt", us_per_dt))
         outfile.write(define_outline_events_array(outline_events))
         outfile.write(define_fret_events_array(fret_events))
