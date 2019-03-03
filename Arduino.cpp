@@ -3,8 +3,8 @@
 
 std::mt19937 gen(0);
 
-long int random(int a, int b) {
-    std::uniform_int_distribution<> dis(a, b);
+long int random(uint16_t a, uint16_t b) {
+    std::uniform_int_distribution<uint16_t> dis(a, b);
     return dis(gen);
 }
 

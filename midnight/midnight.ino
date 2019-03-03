@@ -4,8 +4,6 @@
 #include "solo.h"
 #include "patterns.h"
 
-uint32_t Wheel(unsigned char WheelPos);
-
 constexpr auto outline_pin{3u};
 constexpr auto e_string_pin{5u};
 constexpr auto b_string_pin{6u};
@@ -21,6 +19,7 @@ auto fret_events_idx{0u};
 auto outline_events_idx{0u};
 unsigned int const initial_brightness{50};
 unsigned int const dim{25};
+uint8_t fret_r, fret_g, fret_b = 0u;
 
 void setup() {
     randomSeed(0);
@@ -41,22 +40,15 @@ void setup() {
 }
 
 void loop() {
-    outline.clear();
-    e_string.clear();
-    g_string.clear();
-    b_string.clear();
-
     auto const &current_outline_event = outline_events[outline_events_idx];
-    auto const &next_outline_event = outline_events[outline_events_idx + 1];
     auto const &current_fret_event = fret_events[fret_events_idx];
-    auto const &next_fret_event = fret_events[fret_events_idx + 1];
 
     if (current_fret_event.string_number == 1) {
-        e_string.setPixelColor(current_fret_event.fret_number, Wheel(fret_events_idx));
+        e_string.setPixelColor(current_fret_event.fret_number, fret_r, fret_g, fret_b);
     } else if (current_fret_event.string_number == 2) {
-        b_string.setPixelColor(current_fret_event.fret_number, Wheel(fret_events_idx));
+        b_string.setPixelColor(current_fret_event.fret_number, fret_r, fret_g, fret_b);
     } else if (current_fret_event.string_number == 3) {
-        g_string.setPixelColor(current_fret_event.fret_number, Wheel(fret_events_idx));
+        g_string.setPixelColor(current_fret_event.fret_number, fret_r, fret_g, fret_b);
     } else if (current_fret_event.string_number == 4) {
         // special case
         e_string.setBrightness(dim);
@@ -70,68 +62,67 @@ void loop() {
     }
 
 
-    auto const current_outline_step = time_step - current_fret_event.onset;
-    auto const current_outline_duration = next_outline_event.onset - current_fret_event.onset;
+    auto const current_outline_step = time_step - current_outline_event.onset + 1;
     outline.setBrightness(initial_brightness);
     switch (current_outline_event.midi_number) {
         case 61: {
-            pulse(outline, current_outline_step, current_outline_duration, 255, 0, 0, 4);
+            pulse(outline, current_outline_step, current_outline_event.duration, 255, 0, 0, 4);
             break;
         }
         case 62: {
-            pulse(outline, current_outline_step, current_outline_duration, 0, 255, 0, 4);
+            pulse(outline, current_outline_step, current_outline_event.duration, 0, 255, 0, 4);
             break;
         }
         case 63: {
-            pulse(outline, current_outline_step, current_outline_duration, 0, 0, 255, 4);
+            pulse(outline, current_outline_step, current_outline_event.duration, 0, 0, 255, 4);
             break;
         }
         case 64: {
-            pulse(outline, current_outline_step, current_outline_duration, 255, 255, 0, 4);
+            pulse(outline, current_outline_step, current_outline_event.duration, 255, 255, 0, 4);
             break;
         }
         case 65: {
-            fade(outline, current_outline_step, current_outline_duration, 255, 0, 0);
+            fade(outline, current_outline_step, current_outline_event.duration, 255, 0, 0);
             break;
         }
         case 66: {
-            fade(outline, current_outline_step, current_outline_duration, 0, 255, 0);
+            fade(outline, current_outline_step, current_outline_event.duration, 0, 255, 0);
             break;
         }
         case 67: {
-            fade(outline, current_outline_step, current_outline_duration, 0, 0, 255);
+            fade(outline, current_outline_step, current_outline_event.duration, 0, 0, 255);
             break;
         }
         case 68: {
-            fade(outline, current_outline_step, current_outline_duration, 255, 255, 0);
+            fade(outline, current_outline_step, current_outline_event.duration, 255, 255, 0);
             break;
         }
         case 69: {
-            sparkle(outline, current_outline_step, current_outline_duration, 255, 255, 0, 16, 32);
+            sparkle(outline, current_outline_step, current_outline_event.duration, 255, 255, 0, 16, 32);
             break;
         }
         case 70: {
-            rainbow_chaser(outline, current_outline_step, current_outline_duration);
+            rainbow_chaser(outline, current_outline_step, current_outline_event.duration);
             break;
         }
         case 71: {
-            reverse_rainbow_chaser(outline, current_outline_step, current_outline_duration);
+            reverse_rainbow_chaser(outline, current_outline_step, current_outline_event.duration);
             break;
         }
         case 72: {
-            flair(outline, current_outline_step, current_outline_duration, 255, 0, 0);
+            flair(outline, current_outline_step, current_outline_event.duration, 255, 0, 0);
             break;
         }
         case 73: {
-            flair(outline, current_outline_step, current_outline_duration, 0, 255, 0);
+            flair(outline, current_outline_step, current_outline_event.duration, 0, 255, 0);
             break;
         }
         case 74: {
-            flair(outline, current_outline_step, current_outline_duration, 0, 0, 255);
+            flair(outline, current_outline_step, current_outline_event.duration, 0, 0, 255);
             break;
         }
         case 75: {
-            flair(outline, current_outline_step, current_outline_duration, 255, 255, 0);
+            flair(outline, current_outline_step, current_outline_event.duration, 255, 255, 0);
             break;
         }
         case 76: {
@@ -148,26 +139,50 @@ void loop() {
     b_string.show();
     g_string.show();
 
-    delayMicroseconds(ms_per_dt * 1000);
+    delayMicroseconds(us_per_dt);
 
     ++time_step;
-    if (time_step == next_outline_event.onset) {
+    if (time_step == (current_outline_event.onset + current_outline_event.duration)) {
+        outline.clear();
         outline_events_idx++;
     }
-    if (time_step == next_fret_event.onset) {
+    if (time_step == current_fret_event.onset + current_fret_event.duration) {
+        e_string.clear();
+        g_string.clear();
+        b_string.clear();
         fret_events_idx++;
+        auto const fret_rgb = random(0u, 2u);
+        if (fret_rgb == 0) {
+            fret_r = 255;
+            fret_g = 0;
+            fret_b = 0;
+        } else if (fret_rgb == 1) {
+            fret_r = 0;
+            fret_g = 255;
+            fret_b = 0;
+        } else if (fret_rgb == 2) {
+            fret_r = 0;
+            fret_g = 0;
+            fret_b = 255;
+        }
     }
 }
 
 uint32_t Wheel(unsigned char WheelPos) {
-    WheelPos = 255 - WheelPos;
+    WheelPos = static_cast<unsigned char>(255 - WheelPos);
     if (WheelPos < 85) {
-        return Adafruit_NeoPixel::Color(255 - WheelPos * 3, 0, WheelPos * 3);
+        return Adafruit_NeoPixel::Color(static_cast<uint8_t>(255 - WheelPos * 3),
+                                        0,
+                                        static_cast<uint8_t>(WheelPos * 3));
     }
     if (WheelPos < 170) {
         WheelPos -= 85;
-        return Adafruit_NeoPixel::Color(0, WheelPos * 3, 255 - WheelPos * 3);
+        return Adafruit_NeoPixel::Color(0,
+                                        static_cast<uint8_t>(WheelPos * 3),
+                                        static_cast<uint8_t>(255 - WheelPos * 3));
     }
     WheelPos -= 170;
-    return Adafruit_NeoPixel::Color(WheelPos * 3, 255 - WheelPos * 3, 0);
+    return Adafruit_NeoPixel::Color(static_cast<uint8_t>(WheelPos * 3),
+                                    static_cast<uint8_t>(255 - WheelPos * 3),
+                                    0);
 }

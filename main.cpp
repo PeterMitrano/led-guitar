@@ -197,7 +197,7 @@ int main() {
 
     auto const CY{200};
     auto const CX{400};
-    sf::RenderWindow window(sf::VideoMode(2*CX, 2*CY), "LED Guitar Renderer");
+    sf::RenderWindow window(sf::VideoMode(2 * CX, 2 * CY), "LED Guitar Renderer");
 
     sf::Music music;
     if (!music.openFromFile("midnight.wav")) {
@@ -215,7 +215,7 @@ int main() {
         outline.circles[i].setPosition(x, y);
     }
     for (auto i{0u}; i < e_string.circles.size(); ++i) {
-        auto const x{CX - 100 + i*25.f};
+        auto const x{CX - 100 + i * 25.f};
         e_string.circles[i].setPosition(x, CY + 10.f);
         g_string.circles[i].setPosition(x, CY);
         b_string.circles[i].setPosition(x, CY - 10.f);
@@ -224,11 +224,11 @@ int main() {
     unsigned long time_step{0};
     auto updateLEDs = [&]() {
         auto const &elapsed = clock.getElapsedTime();
-        if (elapsed.asMilliseconds() >= time_step * ms_per_dt) {
+        if (static_cast<unsigned long>(elapsed.asMicroseconds()) >= time_step * us_per_dt) {
             ++time_step;
 
             // update leds
-             loop();
+            loop();
         }
     };
 

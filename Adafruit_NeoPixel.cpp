@@ -1,14 +1,13 @@
 #include <Adafruit_NeoPixel.h>
 
 
-static auto const radius{5.f};
+static auto const radius{3.f};
 
 Adafruit_NeoPixel::Adafruit_NeoPixel(uint16_t n, uint8_t p) {
-    sf::Color const grey{180, 180, 180};
     circles.resize(n);
     for (auto &circle : circles) {
         circle.setRadius(radius);
-        circle.setFillColor(grey);
+        circle.setFillColor(sf::Color::Black);
     }
 }
 
@@ -50,10 +49,12 @@ void Adafruit_NeoPixel::setBrightness(uint8_t brightness) {
 }
 
 void Adafruit_NeoPixel::setPixelColor(uint16_t n, uint32_t c) {
-    auto const r = c >> 16;
-    auto const g = (c >> 8) & 8;
-    auto const b = c & 8;
-    sf::Color const color(static_cast<sf::Uint8>(r), static_cast<sf::Uint8>(g), static_cast<sf::Uint8>(b));
+    // c = 255 should be 255, 0, 0
+    // c = 0 should be
+    auto const r = static_cast<sf::Uint8>(c >> 16);
+    auto const g = static_cast<sf::Uint8>(c >> 8);
+    auto const b = static_cast<sf::Uint8>(c);
+    sf::Color const color(r, g, b);
     circles[n].setFillColor(color);
 }
 
