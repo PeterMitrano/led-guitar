@@ -19,7 +19,7 @@ auto fret_events_idx{0u};
 auto outline_events_idx{0u};
 unsigned int const initial_brightness{50};
 unsigned int const dim{15};
-uint8_t fret_r, fret_g, fret_b = 0u;
+uint8_t fret_r = 0u, fret_g = 0u, fret_b = 255u;
 
 void setup() {
     randomSeed(0);
