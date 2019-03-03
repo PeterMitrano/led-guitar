@@ -1,10 +1,10 @@
 #include <Adafruit_NeoPixel.h>
 
 
-static auto const radius{3.f};
+static auto const radius{5.f};
 
 Adafruit_NeoPixel::Adafruit_NeoPixel(uint16_t n, uint8_t p) {
-    sf::Color const grey{50, 50, 50};
+    sf::Color const grey{180, 180, 180};
     circles.resize(n);
     for (auto &circle : circles) {
         circle.setRadius(radius);
