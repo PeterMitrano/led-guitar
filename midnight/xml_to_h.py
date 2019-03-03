@@ -68,7 +68,7 @@ def main():
 
     seconds_per_quarter = 60.0 / args.bpm
     dt_per_quarter = 32
-    us_per_dt = int(seconds_per_quarter / dt_per_quarter * 1000)
+    ms_per_dt = int(seconds_per_quarter / dt_per_quarter * 1000)
 
     fret_events = []
     outline_events = []
@@ -95,7 +95,7 @@ def main():
 
     with open(args.outfile, 'w') as outfile:
         outfile.write('#include "util.h"\n')
-        outfile.write(define_constant("unsigned int", "us_per_dt", us_per_dt))
+        outfile.write(define_constant("unsigned int", "ms_per_dt", ms_per_dt))
         outfile.write(define_outline_events_array(outline_events))
         outfile.write(define_fret_events_array(fret_events))
         outfile.write("\n")
