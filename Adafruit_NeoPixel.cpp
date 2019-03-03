@@ -20,6 +20,13 @@ void Adafruit_NeoPixel::show() const {
 
 }
 
+void Adafruit_NeoPixel::clear() {
+    for (auto &circle : circles) {
+        circle.setFillColor(sf::Color::Black);
+    }
+}
+
+
 void Adafruit_NeoPixel::setPixelColor(uint16_t n, uint8_t r, uint8_t g, uint8_t b) {
     sf::Color color(static_cast<sf::Uint8>(r * brightness),
                     static_cast<sf::Uint8>(g * brightness),

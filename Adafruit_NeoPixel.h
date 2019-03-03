@@ -16,6 +16,8 @@ struct Adafruit_NeoPixel {
 
     void show() const;
 
+    void clear();
+
     void setPixelColor(uint16_t n, uint8_t r, uint8_t g, uint8_t b);
 
     void setPixelColor(uint16_t n, uint32_t c);

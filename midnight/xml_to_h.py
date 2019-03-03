@@ -18,7 +18,7 @@ blue = np.array([0, 0, 1])
 
 class FretEvent:
 
-    def __index__(self):
+    def __init__(self):
         self.onset = 0
         self.string_number = 0
         self.fret_number = 0
@@ -29,7 +29,7 @@ class FretEvent:
 
 class Event:
 
-    def __index__(self):
+    def __init__(self):
         self.onset = 0
         self.midi_number = 0
 
@@ -92,6 +92,9 @@ def main():
         outline_event.onset = int(outline_note.getOffsetInHierarchy(score) * dt_per_quarter)
         outline_event.midi_number = outline_note.pitch.midi
         outline_events.append(outline_event)
+
+    outline_events.append(Event())
+    fret_events.append(FretEvent())
 
     with open(args.outfile, 'w') as outfile:
         outfile.write('#include "util.h"\n')

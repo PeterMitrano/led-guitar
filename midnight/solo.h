@@ -25,6 +25,7 @@ OutlineEvent const outline_events[] = {
   OutlineEvent{832u, 74u},
   OutlineEvent{864u, 75u},
   OutlineEvent{896u, 76u},
+  OutlineEvent{0u, 0u},
 };FretEvent const fret_events[] = {
   FretEvent{0u, 1u, 9u},
   FretEvent{64u, 1u, 7u},
@@ -74,4 +75,5 @@ OutlineEvent const outline_events[] = {
   FretEvent{864u, 3u, 8u},
   FretEvent{872u, 2u, 5u},
   FretEvent{896u, 4u, 0u},
+  FretEvent{0u, 0u, 0u},
 };

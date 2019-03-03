@@ -41,9 +41,15 @@ void setup() {
 }
 
 void loop() {
+    outline.clear();
+    e_string.clear();
+    g_string.clear();
+    b_string.clear();
+
     auto const &current_outline_event = outline_events[outline_events_idx];
     auto const &next_outline_event = outline_events[outline_events_idx + 1];
     auto const &current_fret_event = fret_events[fret_events_idx];
+    auto const &next_fret_event = fret_events[fret_events_idx + 1];
 
     if (current_fret_event.string_number == 1) {
         e_string.setPixelColor(current_fret_event.fret_number, Wheel(fret_events_idx));
@@ -145,10 +151,10 @@ void loop() {
     delayMicroseconds(ms_per_dt * 1000);
 
     ++time_step;
-    if (time_step == current_outline_event.onset) {
+    if (time_step == next_outline_event.onset) {
         outline_events_idx++;
     }
-    if (time_step == current_fret_event.onset) {
+    if (time_step == next_fret_event.onset) {
         fret_events_idx++;
     }
 }

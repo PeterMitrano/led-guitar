@@ -204,8 +204,8 @@ int main() {
         return EXIT_FAILURE;
     }
 
-//    music.play();
-//    music.setPlayingOffset(sf::seconds(56.10f));
+    music.play();
+    music.setPlayingOffset(sf::seconds(56.10f));
 
     sf::Clock clock;
 
@@ -228,7 +228,7 @@ int main() {
             ++time_step;
 
             // update leds
-            // loop();
+             loop();
         }
     };
 

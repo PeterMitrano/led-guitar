@@ -3,7 +3,7 @@ constexpr uint32_t OFF{0};
 void pulse(Adafruit_NeoPixel &string, uint16_t step, uint16_t duration, uint8_t r, uint8_t g, uint8_t b, unsigned int offset, unsigned int n=4) {
   for (auto i{0}; i < string.numPixels(); ++i) {
     if ((i + offset) % n == 0) {
-      if (step >= duration / 2) {
+      if (step < duration / 2) {
         string.setPixelColor(i, r, g, b);
       }
       else {
