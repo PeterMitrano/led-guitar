@@ -215,10 +215,10 @@ int main() {
         outline.circles[i].setPosition(x, y);
     }
     for (auto i{0u}; i < e_string.circles.size(); ++i) {
-        auto const x{CX - 100 + i * 25.f};
-        e_string.circles[i].setPosition(x, CY + 10.f);
-        g_string.circles[i].setPosition(x, CY);
-        b_string.circles[i].setPosition(x, CY - 10.f);
+        auto const x{CX + 450 - i * 25.f};
+        e_string.circles[i].setPosition(x, CY + 0.f);
+        g_string.circles[i].setPosition(x, CY - 7.f);
+        b_string.circles[i].setPosition(x, CY - 14.f);
     }
 
     unsigned long time_step{0};

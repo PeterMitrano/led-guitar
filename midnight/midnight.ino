@@ -18,7 +18,7 @@ auto time_step{0ull};
 auto fret_events_idx{0u};
 auto outline_events_idx{0u};
 unsigned int const initial_brightness{50};
-unsigned int const dim{25};
+unsigned int const dim{15};
 uint8_t fret_r, fret_g, fret_b = 0u;
 
 void setup() {
@@ -98,7 +98,7 @@ void loop() {
             break;
         }
         case 69: {
-            sparkle(outline, current_outline_step, current_outline_event.duration, 255, 255, 0, 16, 32);
+            sparkle(outline, current_outline_step, current_outline_event.duration, 0, 0, 255, 6, 90);
             break;
         }
         case 70: {
@@ -127,7 +127,7 @@ void loop() {
         }
         case 76: {
             outline.setBrightness(dim);
-            for (auto i{0}; i < outline.numPixels(); ++i) {
+            for (uint32_t i{0u}; i < outline.numPixels(); ++i) {
                 outline.setPixelColor(i, 255, 255, 0);
             }
             break;
