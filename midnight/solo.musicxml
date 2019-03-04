@@ -614,8 +614,9 @@
         </print>
       <note default-x="95.55" default-y="0.00">
         <pitch>
-          <step>A</step>
-          <octave>5</octave>
+          <step>C</step>
+          <alter>1</alter>
+          <octave>6</octave>
           </pitch>
         <duration>48</duration>
         <voice>1</voice>
@@ -625,7 +626,7 @@
         <notations>
           <technical>
             <string>1</string>
-            <fret>17</fret>
+            <fret>21</fret>
             </technical>
           </notations>
         </note>
