@@ -44,7 +44,8 @@ def define_constant(vartype, name, value):
 
 
 def define_fret_events_array(events):
-    definition = "FretEvent const fret_events[] = {\n"
+    definition = "constexpr unsigned int const fret_events_size = {};\n".format(len(events))
+    definition += "FretEvent const fret_events[] = {\n"
     for e in events:
         definition += "  FretEvent{" + "{}u, {}u, {}u, {}u".format(e.onset, e.duration, e.string_number, e.fret_number) + "},\n"
     definition += "};\n"
@@ -52,7 +53,8 @@ def define_fret_events_array(events):
 
 
 def define_outline_events_array(events):
-    definition = "OutlineEvent const outline_events[] = {\n"
+    definition = "constexpr unsigned int const outline_events_size = {};\n".format(len(events))
+    definition += "OutlineEvent const outline_events[] = {\n"
     for e in events:
         definition += "  OutlineEvent{" + "{}u, {}u, {}u".format(e.onset, e.duration, e.midi_number) + "},\n"
     definition += "};\n"

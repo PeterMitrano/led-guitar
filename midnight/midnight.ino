@@ -40,97 +40,109 @@ void setup() {
 }
 
 void loop() {
+
     auto const &current_outline_event = outline_events[outline_events_idx];
     auto const &current_fret_event = fret_events[fret_events_idx];
 
-    if (current_fret_event.string_number == 1) {
-        e_string.setPixelColor(current_fret_event.fret_number, fret_r, fret_g, fret_b);
-    } else if (current_fret_event.string_number == 2) {
-        b_string.setPixelColor(current_fret_event.fret_number, fret_r, fret_g, fret_b);
-    } else if (current_fret_event.string_number == 3) {
-        g_string.setPixelColor(current_fret_event.fret_number, fret_r, fret_g, fret_b);
-    } else if (current_fret_event.string_number == 4) {
-        // special case
-        e_string.setBrightness(dim);
-        e_string.setPixelColor(current_fret_event.fret_number, 255, 255, 0);
+    if (fret_events_idx >= fret_events_size) {
+        e_string.clear();
+        g_string.clear();
+        b_string.clear();
+    } else {
+        if (current_fret_event.string_number == 1) {
+            e_string.setPixelColor(current_fret_event.fret_number, fret_r, fret_g, fret_b);
+        } else if (current_fret_event.string_number == 2) {
+            b_string.setPixelColor(current_fret_event.fret_number, fret_r, fret_g, fret_b);
+        } else if (current_fret_event.string_number == 3) {
+            g_string.setPixelColor(current_fret_event.fret_number, fret_r, fret_g, fret_b);
+        } else if (current_fret_event.string_number == 4) {
+            // special case
+            e_string.setBrightness(dim);
+            b_string.setBrightness(dim);
+            g_string.setBrightness(dim);
 
-        b_string.setBrightness(dim);
-        b_string.setPixelColor(current_fret_event.fret_number, 255, 255, 0);
-
-        g_string.setBrightness(dim);
-        g_string.setPixelColor(current_fret_event.fret_number, 255, 255, 0);
+            for (uint16_t i{0u}; i < e_string.numPixels(); ++i) {
+                e_string.setPixelColor(i, 255, 255, 0);
+                b_string.setPixelColor(i, 255, 255, 0);
+                g_string.setPixelColor(i, 255, 255, 0);
+            }
+        }
     }
 
 
-    auto const current_outline_step = time_step - current_outline_event.onset + 1;
-    outline.setBrightness(initial_brightness);
-    switch (current_outline_event.midi_number) {
-        case 61: {
-            pulse(outline, current_outline_step, current_outline_event.duration, 255, 0, 0, 4);
-            break;
-        }
-        case 62: {
-            pulse(outline, current_outline_step, current_outline_event.duration, 0, 255, 0, 4);
-            break;
-        }
-        case 63: {
-            pulse(outline, current_outline_step, current_outline_event.duration, 0, 0, 255, 4);
-            break;
-        }
-        case 64: {
-            pulse(outline, current_outline_step, current_outline_event.duration, 255, 255, 0, 4);
-            break;
-        }
-        case 65: {
-            fade(outline, current_outline_step, current_outline_event.duration, 255, 0, 0);
-            break;
-        }
-        case 66: {
-            fade(outline, current_outline_step, current_outline_event.duration, 0, 255, 0);
-            break;
-        }
-        case 67: {
-            fade(outline, current_outline_step, current_outline_event.duration, 0, 0, 255);
-            break;
-        }
-        case 68: {
-            fade(outline, current_outline_step, current_outline_event.duration, 255, 255, 0);
-            break;
-        }
-        case 69: {
-            sparkle(outline, current_outline_step, current_outline_event.duration, 0, 0, 255, 6, 90);
-            break;
-        }
-        case 70: {
-            rainbow_chaser(outline, current_outline_step, current_outline_event.duration);
-            break;
-        }
-        case 71: {
-            reverse_rainbow_chaser(outline, current_outline_step, current_outline_event.duration);
-            break;
-        }
-        case 72: {
-            flair(outline, current_outline_step, current_outline_event.duration, 255, 0, 0);
-            break;
-        }
-        case 73: {
-            flair(outline, current_outline_step, current_outline_event.duration, 0, 255, 0);
-            break;
-        }
-        case 74: {
-            flair(outline, current_outline_step, current_outline_event.duration, 0, 0, 255);
-            break;
-        }
-        case 75: {
-            flair(outline, current_outline_step, current_outline_event.duration, 255, 255, 0);
-            break;
-        }
-        case 76: {
-            outline.setBrightness(dim);
-            for (uint32_t i{0u}; i < outline.numPixels(); ++i) {
-                outline.setPixelColor(i, 255, 255, 0);
+    if (outline_events_idx >= outline_events_size) {
+        outline.clear();
+    } else {
+        auto const current_outline_step = time_step - current_outline_event.onset + 1;
+        outline.setBrightness(initial_brightness);
+        switch (current_outline_event.midi_number) {
+            case 61: {
+                fade(outline, current_outline_step, current_outline_event.duration, 255, 0, 0);
+                break;
             }
-            break;
+            case 62: {
+                fade(outline, current_outline_step, current_outline_event.duration, 0, 255, 0);
+                break;
+            }
+            case 63: {
+                fade(outline, current_outline_step, current_outline_event.duration, 0, 0, 255);
+                break;
+            }
+            case 64: {
+                fade(outline, current_outline_step, current_outline_event.duration, 255, 255, 0);
+                break;
+            }
+            case 65: {
+                pulse(outline, current_outline_step, current_outline_event.duration, 255, 0, 0);
+                break;
+            }
+            case 66: {
+                pulse(outline, current_outline_step, current_outline_event.duration, 0, 255, 0);
+                break;
+            }
+            case 67: {
+                pulse(outline, current_outline_step, current_outline_event.duration, 0, 0, 255);
+                break;
+            }
+            case 68: {
+                pulse(outline, current_outline_step, current_outline_event.duration, 255, 255, 0);
+                break;
+            }
+            case 69: {
+                sparkle(outline, current_outline_step, current_outline_event.duration, 0, 0, 255, 6, 90);
+                break;
+            }
+            case 70: {
+                rainbow_chaser(outline, current_outline_step, current_outline_event.duration);
+                break;
+            }
+            case 71: {
+                reverse_rainbow_chaser(outline, current_outline_step, current_outline_event.duration);
+                break;
+            }
+            case 72: {
+                flair(outline, current_outline_step, current_outline_event.duration, 255, 0, 0);
+                break;
+            }
+            case 73: {
+                flair(outline, current_outline_step, current_outline_event.duration, 0, 255, 0);
+                break;
+            }
+            case 74: {
+                flair(outline, current_outline_step, current_outline_event.duration, 0, 0, 255);
+                break;
+            }
+            case 75: {
+                flair(outline, current_outline_step, current_outline_event.duration, 255, 255, 0);
+                break;
+            }
+            case 76: {
+                outline.setBrightness(dim);
+                for (uint32_t i{0u}; i < outline.numPixels(); ++i) {
+                    outline.setPixelColor(i, 255, 255, 0);
+                }
+                break;
+            }
         }
     }
 

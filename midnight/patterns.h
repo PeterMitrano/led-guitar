@@ -3,11 +3,10 @@
 constexpr uint32_t OFF{0};
 
 void
-pulse(Adafruit_NeoPixel &strip, uint16_t step, uint16_t duration, uint8_t r, uint8_t g, uint8_t b, unsigned int offset,
-      unsigned int n = 4) {
+pulse(Adafruit_NeoPixel &strip, uint16_t step, uint16_t duration, uint8_t r, uint8_t g, uint8_t b, unsigned int n = 4) {
     auto const intensity = 1;
     for (uint16_t i{0u}; i < strip.numPixels(); ++i) {
-        if ((i + offset) % n == 0) {
+        if ((i + step) % n == 0) {
             strip.setPixelColor(i,
                                 static_cast<uint8_t>(intensity * r),
                                 static_cast<uint8_t>(intensity * g),

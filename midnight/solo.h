@@ -1,5 +1,6 @@
 #include "util.h"
 unsigned int const us_per_dt = 18750;
+constexpr unsigned int const outline_events_size = 23;
 OutlineEvent const outline_events[] = {
   OutlineEvent{0u, 32u, 61u},
   OutlineEvent{32u, 32u, 62u},
@@ -17,15 +18,15 @@ OutlineEvent const outline_events[] = {
   OutlineEvent{416u, 32u, 66u},
   OutlineEvent{448u, 32u, 67u},
   OutlineEvent{480u, 32u, 68u},
-  OutlineEvent{512u, 32u, 69u},
-  OutlineEvent{544u, 96u, 70u},
-  OutlineEvent{640u, 128u, 71u},
+  OutlineEvent{512u, 96u, 69u},
+  OutlineEvent{608u, 160u, 70u},
   OutlineEvent{768u, 32u, 72u},
   OutlineEvent{800u, 32u, 73u},
   OutlineEvent{832u, 32u, 74u},
   OutlineEvent{864u, 32u, 75u},
   OutlineEvent{896u, 384u, 76u},
 };
+constexpr unsigned int const fret_events_size = 48;
 FretEvent const fret_events[] = {
   FretEvent{0u, 64u, 1u, 9u},
   FretEvent{64u, 40u, 1u, 7u},
