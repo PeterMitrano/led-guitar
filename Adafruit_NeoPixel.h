@@ -30,6 +30,6 @@ struct Adafruit_NeoPixel {
 
     // "PRIVATE"
     std::vector<sf::CircleShape> circles;
-
+    double brightness{1.0};
 
 };

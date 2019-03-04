@@ -3,7 +3,7 @@
 constexpr uint32_t OFF{0};
 
 void
-pulse(Adafruit_NeoPixel &strip, uint16_t step, uint16_t duration, uint8_t r, uint8_t g, uint8_t b, unsigned int n = 4) {
+pulse(Adafruit_NeoPixel &strip, uint16_t step, uint16_t, uint8_t r, uint8_t g, uint8_t b, unsigned int n = 4) {
     auto const intensity = 1;
     for (uint16_t i{0u}; i < strip.numPixels(); ++i) {
         if ((i + step) % n == 0) {

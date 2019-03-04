@@ -13,4 +13,4 @@ struct FretEvent {
     uint8_t fret_number;
 };
 
-uint32_t Wheel(unsigned char WheelPos);
+uint32_t Wheel(unsigned char WheelPos, double brightness=1.0);

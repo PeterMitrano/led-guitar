@@ -17,7 +17,7 @@ Adafruit_NeoPixel g_string = Adafruit_NeoPixel(20, g_string_pin);
 auto time_step{0ull};
 auto fret_events_idx{0u};
 auto outline_events_idx{0u};
-unsigned int const initial_brightness{50};
+unsigned int const initial_brightness{100};
 unsigned int const dim{15};
 uint8_t fret_r = 0u, fret_g = 0u, fret_b = 255u;
 
@@ -49,12 +49,22 @@ void loop() {
         g_string.clear();
         b_string.clear();
     } else {
-        if (current_fret_event.string_number == 1) {
-            e_string.setPixelColor(current_fret_event.fret_number, fret_r, fret_g, fret_b);
-        } else if (current_fret_event.string_number == 2) {
-            b_string.setPixelColor(current_fret_event.fret_number, fret_r, fret_g, fret_b);
-        } else if (current_fret_event.string_number == 3) {
-            g_string.setPixelColor(current_fret_event.fret_number, fret_r, fret_g, fret_b);
+        for (uint16_t i{0u}; i < e_string.numPixels(); ++i) {
+            e_string.setPixelColor(i, Wheel(i * 255 / e_string.numPixels(), 0.2));
+            g_string.setPixelColor(i, Wheel(i * 255 / e_string.numPixels(), 0.2));
+            b_string.setPixelColor(i, Wheel(i * 255 / e_string.numPixels(), 0.2));
+        }
+        if (current_fret_event.fret_number == 17) {
+            for (uint16_t i{0u}; i < e_string.numPixels(); ++i) {
+                e_string.setPixelColor(i, 255, 255, 255);
+                b_string.setPixelColor(i, 255, 255, 255);
+                g_string.setPixelColor(i, 255, 255, 255);
+            }
+        }
+        else if (current_fret_event.string_number < 4) {
+            e_string.setPixelColor(current_fret_event.fret_number, 255, 255, 255);
+            g_string.setPixelColor(current_fret_event.fret_number, 255, 255, 255);
+            b_string.setPixelColor(current_fret_event.fret_number, 255, 255, 255);
         } else if (current_fret_event.string_number == 4) {
             // special case
             e_string.setBrightness(dim);
@@ -180,21 +190,21 @@ void loop() {
     }
 }
 
-uint32_t Wheel(unsigned char WheelPos) {
+uint32_t Wheel(unsigned char WheelPos, double brightness) {
     WheelPos = static_cast<unsigned char>(255 - WheelPos);
     if (WheelPos < 85) {
-        return Adafruit_NeoPixel::Color(static_cast<uint8_t>(255 - WheelPos * 3),
+        return Adafruit_NeoPixel::Color(static_cast<uint8_t>((255 - WheelPos * 3) * brightness),
                                         0,
-                                        static_cast<uint8_t>(WheelPos * 3));
+                                        static_cast<uint8_t>(WheelPos * 3 * brightness));
     }
     if (WheelPos < 170) {
         WheelPos -= 85;
         return Adafruit_NeoPixel::Color(0,
-                                        static_cast<uint8_t>(WheelPos * 3),
-                                        static_cast<uint8_t>(255 - WheelPos * 3));
+                                        static_cast<uint8_t>(WheelPos * 3 * brightness),
+                                        static_cast<uint8_t>((255 - WheelPos * 3) * brightness));
     }
     WheelPos -= 170;
-    return Adafruit_NeoPixel::Color(static_cast<uint8_t>(WheelPos * 3),
-                                    static_cast<uint8_t>(255 - WheelPos * 3),
+    return Adafruit_NeoPixel::Color(static_cast<uint8_t>(WheelPos * 3 * brightness),
+                                    static_cast<uint8_t>((255 - WheelPos * 3) * brightness),
                                     0);
 }
