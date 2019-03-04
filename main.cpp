@@ -210,12 +210,12 @@ int main() {
     sf::Clock clock;
 
     for (auto i{0u}; i < outline.circles.size(); ++i) {
-        auto const x = CX - 200 + outline_positions[i].x * 22;
+        auto const x = 15 + outline_positions[i].x * 22;
         auto const y = CY + outline_positions[i].y * 22;
         outline.circles[i].setPosition(x, y);
     }
     for (auto i{0u}; i < e_string.circles.size(); ++i) {
-        auto const x{CX + 450 - i * 25.f};
+        auto const x{CX + 265 - i * 25.f};
         e_string.circles[i].setPosition(x, CY + 0.f);
         g_string.circles[i].setPosition(x, CY - 7.f);
         b_string.circles[i].setPosition(x, CY - 14.f);
