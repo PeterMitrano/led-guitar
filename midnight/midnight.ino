@@ -120,7 +120,7 @@ void loop() {
                 break;
             }
             case 69: {
-                sparkle(outline, current_outline_step, current_outline_event.duration, 0, 0, 255, 6, 90);
+                sparkle(outline, current_outline_step, current_outline_event.duration, 0, 0, 255, 6, 60);
                 break;
             }
             case 70: {
