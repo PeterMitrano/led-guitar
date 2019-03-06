@@ -4,10 +4,11 @@
 #include "solo.h"
 #include "patterns.h"
 
-constexpr auto outline_pin{3u};
+constexpr auto outline_pin{9u};
 constexpr auto e_string_pin{5u};
 constexpr auto b_string_pin{6u};
-constexpr auto g_string_pin{0u};
+constexpr auto g_string_pin{3u};
+constexpr auto button_pin{7u};
 
 Adafruit_NeoPixel outline = Adafruit_NeoPixel(3 * 60, outline_pin);
 Adafruit_NeoPixel e_string = Adafruit_NeoPixel(20, e_string_pin);
@@ -37,6 +38,11 @@ void setup() {
     e_string.show();
     b_string.show();
     g_string.show();
+
+    pinMode(button_pin, INPUT_PULLUP);
+
+    // wait until button is pressed...
+    while (digitalRead(button_pin);
 }
 
 void loop() {
@@ -162,7 +168,8 @@ void loop() {
     b_string.show();
     g_string.show();
 
-    delayMicroseconds(us_per_dt);
+    constexpr auto us_error{500u};
+    delayMicroseconds(us_per_dt + us_error);
 
     ++time_step;
     if (time_step == (current_outline_event.onset + current_outline_event.duration)) {
