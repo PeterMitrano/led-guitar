@@ -1,5 +1,5 @@
 #include "util.h"
-unsigned int const us_per_dt = 18750;
+unsigned int const us_per_dt = 62500;
 constexpr unsigned int const outline_events_size = 23;
 OutlineEvent const outline_events[] = {
   OutlineEvent{0u, 32u, 61u},

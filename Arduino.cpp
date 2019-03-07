@@ -1,4 +1,5 @@
 #include <random>
+#include <iostream>
 #include "Arduino.h"
 
 std::mt19937 gen(0);
@@ -14,4 +15,13 @@ void randomSeed(unsigned long seed) {
 
 void delayMicroseconds(unsigned long us) {
     // this is mocked in the event loop, so do nothing here.
+}
+
+void pinMode(unsigned int pin, unsigned int mode) {
+}
+
+int digitalRead(unsigned int pin) {
+    std::cout << "press enter...\n";
+    std::cin.get();
+    return 0;
 }

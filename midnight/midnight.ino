@@ -42,7 +42,7 @@ void setup() {
     pinMode(button_pin, INPUT_PULLUP);
 
     // wait until button is pressed...
-    while (digitalRead(button_pin);
+    while (digitalRead(button_pin));
 }
 
 void loop() {
@@ -168,7 +168,7 @@ void loop() {
     b_string.show();
     g_string.show();
 
-    constexpr auto us_error{500u};
+    constexpr auto us_error{0u};
     delayMicroseconds(us_per_dt + us_error);
 
     ++time_step;

@@ -72,7 +72,7 @@ def main():
 
     seconds_per_quarter = 60.0 / args.bpm
     dt_per_quarter = 32
-    us_per_dt = int(seconds_per_quarter / dt_per_quarter * 1000000)
+    us_per_dt = int(seconds_per_quarter * 1000000 / dt_per_quarter)
 
     fret_events = []
     outline_events = []
