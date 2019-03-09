@@ -19,8 +19,8 @@ Adafruit_NeoPixel g_string = Adafruit_NeoPixel(20, g_string_pin);
 auto time_step{0ull};
 auto fret_events_idx{0u};
 auto outline_events_idx{0u};
-unsigned int const initial_brightness{100};
-unsigned int const dim{25};
+unsigned int const initial_brightness{10};
+unsigned int const dim{10};
 uint8_t fret_r = 0u, fret_g = 0u, fret_b = 255u;
 unsigned long start_time{0ul};
 bool started{false};
@@ -50,7 +50,9 @@ void setup() {
     pinMode(button_pin, INPUT_PULLUP);
 
     // wait until button is pressed...
+    digitalWrite(13, HIGH);
     while (digitalRead(button_pin));
+    digitalWrite(13, LOW);
     start_time = micros();
     started = true;
 }
@@ -63,48 +65,47 @@ void increment_time_step() {
     auto const &current_outline_event = outline_events[outline_events_idx];
     auto const &current_fret_event = fret_events[fret_events_idx];
 
-    //if (fret_events_idx >= fret_events_size) {
-        //e_string.clear();
-        //g_string.clear();
-        //b_string.clear();
-    //} else {
-        //auto const current_fret_step = time_step - current_fret_event.onset + 1;
-        //for (uint16_t i{0u}; i < e_string.numPixels(); ++i) {
-            //e_string.setPixelColor(i, Wheel(static_cast<unsigned char>(i * 255 / e_string.numPixels()), 0.2));
-            //g_string.setPixelColor(i, Wheel(static_cast<unsigned char>(i * 255 / e_string.numPixels()), 0.2));
-            //b_string.setPixelColor(i, Wheel(static_cast<unsigned char>(i * 255 / e_string.numPixels()), 0.2));
-        //}
-        //if (current_fret_event.fret_number == 21) {
-            //constexpr auto speedup_factor{2.0};
-            //for (uint16_t i{0u}; i < min(current_fret_step * speedup_factor, e_string.numPixels()); ++i) {
-                //e_string.setPixelColor(i, 255, 255, 255);
-                //b_string.setPixelColor(i, 255, 255, 255);
-                //g_string.setPixelColor(i, 255, 255, 255);
-            //}
-        //} else if (current_fret_event.string_number < 4) {
-            //auto const f = 19 - current_fret_event.fret_number;
-            //e_string.setPixelColor(f, 255, 255, 255);
-            //g_string.setPixelColor(f, 255, 255, 255);
-            //b_string.setPixelColor(f, 255, 255, 255);
-        //} else if (current_fret_event.string_number == 4) {
-            //// special case
-            //e_string.setBrightness(dim);
-            //b_string.setBrightness(dim);
-            //g_string.setBrightness(dim);
+    if (fret_events_idx >= fret_events_size) {
+        e_string.clear();
+        g_string.clear();
+        b_string.clear();
+    } else {
+        auto const current_fret_step = time_step - current_fret_event.onset + 1;
+        for (uint16_t i{0u}; i < e_string.numPixels(); ++i) {
+            e_string.setPixelColor(i, Wheel(static_cast<unsigned char>(i * 255 / e_string.numPixels()), 0.2));
+            g_string.setPixelColor(i, Wheel(static_cast<unsigned char>(i * 255 / e_string.numPixels()), 0.2));
+            b_string.setPixelColor(i, Wheel(static_cast<unsigned char>(i * 255 / e_string.numPixels()), 0.2));
+        }
+        if (current_fret_event.fret_number == 21) {
+            constexpr auto speedup_factor{2.0};
+            for (uint16_t i{0u}; i < min(current_fret_step * speedup_factor, e_string.numPixels()); ++i) {
+                e_string.setPixelColor(19 - i, 255, 255, 255);
+                b_string.setPixelColor(19 - i, 255, 255, 255);
+                g_string.setPixelColor(19 - i, 255, 255, 255);
+            }
+        } else if (current_fret_event.string_number < 4) {
+            auto const f = 19 - current_fret_event.fret_number;
+            e_string.setPixelColor(f, 255, 255, 255);
+            g_string.setPixelColor(f, 255, 255, 255);
+            b_string.setPixelColor(f, 255, 255, 255);
+        } else if (current_fret_event.string_number == 4) {
+            // special case
+            e_string.setBrightness(dim);
+            b_string.setBrightness(dim);
+            g_string.setBrightness(dim);
 
-            //for (uint16_t i{0u}; i < e_string.numPixels(); ++i) {
-                //e_string.setPixelColor(i, 255, 255, 0);
-                //b_string.setPixelColor(i, 255, 255, 0);
-                //g_string.setPixelColor(i, 255, 255, 0);
-            //}
-        //}
-    //}
+            for (uint16_t i{0u}; i < e_string.numPixels(); ++i) {
+                e_string.setPixelColor(i, 255, 255, 0);
+                b_string.setPixelColor(i, 255, 255, 0);
+                g_string.setPixelColor(i, 255, 255, 0);
+            }
+        }
+    }
 
     if (outline_events_idx >= outline_events_size) {
         outline.clear();
     } else {
         auto const current_outline_step = time_step - current_outline_event.onset + 1;
-        outline.setBrightness(initial_brightness);
         switch (current_outline_event.midi_number) {
             case 61: {
                 fade(outline, current_outline_step, current_outline_event.duration, 255, 0, 0);

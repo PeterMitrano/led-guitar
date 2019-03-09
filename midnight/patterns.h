@@ -29,7 +29,7 @@ void fade(Adafruit_NeoPixel &strip, uint16_t step, uint16_t duration, uint8_t r,
 
 void flair(Adafruit_NeoPixel &strip, uint16_t step, uint16_t duration, uint8_t r, uint8_t g, uint8_t b) {
     auto const leds_at_step = strip.numPixels() * step / duration;
-    for (uint16_t i{0u}; i < strip.numPixels(); ++i) {
+    for (int i{0u}; i < strip.numPixels(); ++i) {
         auto d_to_center = i - 102;
         if (d_to_center < -90) {
             d_to_center = 180 + d_to_center;
