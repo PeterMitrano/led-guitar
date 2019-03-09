@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <TimerOne.h>
 #include <Adafruit_NeoPixel.h>
 
 #include "solo.h"
@@ -21,9 +22,16 @@ auto outline_events_idx{0u};
 unsigned int const initial_brightness{100};
 unsigned int const dim{25};
 uint8_t fret_r = 0u, fret_g = 0u, fret_b = 255u;
+unsigned long start_time{0ul};
+bool started{false};
 
 void setup() {
+    Serial.begin(9600);
     randomSeed(0);
+
+    Timer1.initialize(us_per_dt);
+    Timer1.attachInterrupt(increment_time_step);
+
     outline.begin();
     e_string.begin();
     b_string.begin();
@@ -43,49 +51,54 @@ void setup() {
 
     // wait until button is pressed...
     while (digitalRead(button_pin));
+    start_time = micros();
+    started = true;
 }
 
-void loop() {
+void increment_time_step() {
+    if (!started) {
+        return;
+    }
 
     auto const &current_outline_event = outline_events[outline_events_idx];
     auto const &current_fret_event = fret_events[fret_events_idx];
 
-    if (fret_events_idx >= fret_events_size) {
-        e_string.clear();
-        g_string.clear();
-        b_string.clear();
-    } else {
-        auto const current_fret_step = time_step - current_fret_event.onset + 1;
-        for (uint16_t i{0u}; i < e_string.numPixels(); ++i) {
-            e_string.setPixelColor(i, Wheel(static_cast<unsigned char>(i * 255 / e_string.numPixels()), 0.2));
-            g_string.setPixelColor(i, Wheel(static_cast<unsigned char>(i * 255 / e_string.numPixels()), 0.2));
-            b_string.setPixelColor(i, Wheel(static_cast<unsigned char>(i * 255 / e_string.numPixels()), 0.2));
-        }
-        if (current_fret_event.fret_number == 21) {
-            constexpr auto speedup_factor{2.0};
-            for (uint16_t i{0u}; i < min(current_fret_step * speedup_factor, e_string.numPixels()); ++i) {
-                e_string.setPixelColor(i, 255, 255, 255);
-                b_string.setPixelColor(i, 255, 255, 255);
-                g_string.setPixelColor(i, 255, 255, 255);
-            }
-        } else if (current_fret_event.string_number < 4) {
-            e_string.setPixelColor(current_fret_event.fret_number, 255, 255, 255);
-            g_string.setPixelColor(current_fret_event.fret_number, 255, 255, 255);
-            b_string.setPixelColor(current_fret_event.fret_number, 255, 255, 255);
-        } else if (current_fret_event.string_number == 4) {
-            // special case
-            e_string.setBrightness(dim);
-            b_string.setBrightness(dim);
-            g_string.setBrightness(dim);
+    //if (fret_events_idx >= fret_events_size) {
+        //e_string.clear();
+        //g_string.clear();
+        //b_string.clear();
+    //} else {
+        //auto const current_fret_step = time_step - current_fret_event.onset + 1;
+        //for (uint16_t i{0u}; i < e_string.numPixels(); ++i) {
+            //e_string.setPixelColor(i, Wheel(static_cast<unsigned char>(i * 255 / e_string.numPixels()), 0.2));
+            //g_string.setPixelColor(i, Wheel(static_cast<unsigned char>(i * 255 / e_string.numPixels()), 0.2));
+            //b_string.setPixelColor(i, Wheel(static_cast<unsigned char>(i * 255 / e_string.numPixels()), 0.2));
+        //}
+        //if (current_fret_event.fret_number == 21) {
+            //constexpr auto speedup_factor{2.0};
+            //for (uint16_t i{0u}; i < min(current_fret_step * speedup_factor, e_string.numPixels()); ++i) {
+                //e_string.setPixelColor(i, 255, 255, 255);
+                //b_string.setPixelColor(i, 255, 255, 255);
+                //g_string.setPixelColor(i, 255, 255, 255);
+            //}
+        //} else if (current_fret_event.string_number < 4) {
+            //auto const f = 19 - current_fret_event.fret_number;
+            //e_string.setPixelColor(f, 255, 255, 255);
+            //g_string.setPixelColor(f, 255, 255, 255);
+            //b_string.setPixelColor(f, 255, 255, 255);
+        //} else if (current_fret_event.string_number == 4) {
+            //// special case
+            //e_string.setBrightness(dim);
+            //b_string.setBrightness(dim);
+            //g_string.setBrightness(dim);
 
-            for (uint16_t i{0u}; i < e_string.numPixels(); ++i) {
-                e_string.setPixelColor(i, 255, 255, 0);
-                b_string.setPixelColor(i, 255, 255, 0);
-                g_string.setPixelColor(i, 255, 255, 0);
-            }
-        }
-    }
-
+            //for (uint16_t i{0u}; i < e_string.numPixels(); ++i) {
+                //e_string.setPixelColor(i, 255, 255, 0);
+                //b_string.setPixelColor(i, 255, 255, 0);
+                //g_string.setPixelColor(i, 255, 255, 0);
+            //}
+        //}
+    //}
 
     if (outline_events_idx >= outline_events_size) {
         outline.clear();
@@ -168,9 +181,6 @@ void loop() {
     b_string.show();
     g_string.show();
 
-    constexpr auto us_error{0u};
-    delayMicroseconds(us_per_dt + us_error);
-
     ++time_step;
     if (time_step == (current_outline_event.onset + current_outline_event.duration)) {
         outline.clear();
@@ -196,6 +206,11 @@ void loop() {
             fret_b = 255;
         }
     }
+
+}
+
+void loop() {
+    return;
 }
 
 uint32_t Wheel(unsigned char WheelPos, double brightness) {

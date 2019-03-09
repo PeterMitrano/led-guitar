@@ -6,3 +6,6 @@ solo.h: xml_to_h.py solo.musicxml
 .PHONY: build
 build: solo.h midnight.ino
 	arduino --verify midnight.ino
+
+upload:
+	arduino --upload midnight.ino
