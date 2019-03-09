@@ -24,4 +24,5 @@ struct WheelColor {
     WheelColor(uint8_t r, uint8_t g, uint8_t b) : r(r), g(g), b(b) {}
 };
 
-WheelColor Wheel(unsigned char WheelPos, double brightness = 1.0);
+WheelColor Wheel(int WheelPos, double brightness = 1.0);
+

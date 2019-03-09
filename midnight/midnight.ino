@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <TimerOne.h>
 #include <FastLED.h>
+#include <colorutils.h>
 
 #include "util.h"
 #include "solo.h"
@@ -20,8 +21,8 @@ CRGB b_string[num_string_leds];
 auto time_step{0ull};
 auto fret_events_idx{0u};
 auto outline_events_idx{0u};
-unsigned int const initial_brightness{10};
-unsigned int const dim{10};
+unsigned int const initial_brightness{255};
+unsigned int const dim{50};
 uint8_t fret_r = 0u, fret_g = 0u, fret_b = 255u;
 unsigned long start_time{0ul};
 bool started{false};
@@ -40,7 +41,7 @@ void setup() {
 
     pinMode(button_pin, INPUT_PULLUP);
 
-    FastLED.setBrightness(1);
+    FastLED.setBrightness(initial_brightness);
 
     // wait until button is pressed...
     digitalWrite(13, HIGH);
@@ -59,41 +60,42 @@ void increment_time_step() {
     auto const &current_fret_event = fret_events[fret_events_idx];
 
     if (fret_events_idx >= fret_events_size) {
-//        e_string.clear();
-//        g_string.clear();
-//        b_string.clear();
+        fill_solid(e_string, num_string_leds, CRGB::Black);
+        fill_solid(g_string, num_string_leds, CRGB::Black);
+        fill_solid(b_string, num_string_leds, CRGB::Black);
     } else {
         auto const current_fret_step = time_step - current_fret_event.onset + 1;
         for (uint16_t i{0u}; i < num_string_leds; ++i) {
-            auto const c = Wheel(static_cast<unsigned char>(i * 255 / num_string_leds), 0.2);
-            e_string[i].setRGB(c.r, c.b, c.g);
-            g_string[i].setRGB(c.r, c.b, c.g);
-            b_string[i].setRGB(c.r, c.b, c.g);
+            auto const c = Wheel(static_cast<unsigned char>(i * 255 / num_string_leds));
+            e_string[i].setRGB(c.r, c.g, c.b);
+            g_string[i].setRGB(c.r, c.g, c.b);
+            b_string[i].setRGB(c.r, c.g, c.b);
         }
         if (current_fret_event.fret_number == 21) {
             constexpr auto speedup_factor{2.0};
             for (uint16_t i{0u}; i < min(current_fret_step * speedup_factor, num_string_leds); ++i) {
-                e_string[num_string_leds-i].setRGB(255, 255, 255);
-                b_string[num_string_leds-i].setRGB(255, 255, 255);
-                g_string[num_string_leds-i].setRGB(255, 255, 255);
+                e_string[num_string_leds - 1 - i].setRGB(255, 255, 255);
+                b_string[num_string_leds - 1 - i].setRGB(255, 255, 255);
+                g_string[num_string_leds - i].setRGB(255, 255, 255);
             }
         } else if (current_fret_event.string_number < 4) {
-            auto const f = 19 - current_fret_event.fret_number;
+            auto const f = num_string_leds - 1 - current_fret_event.fret_number;
             e_string[f].setRGB(255, 255, 255);
             g_string[f].setRGB(255, 255, 255);
             b_string[f].setRGB(255, 255, 255);
         } else if (current_fret_event.string_number == 4) {
             // special case
+            FastLED.setBrightness(dim);
             for (uint16_t i{0u}; i < num_string_leds; ++i) {
-                e_string[i].setRGB(dim, dim, 0);
-                b_string[i].setRGB(dim, dim, 0);
-                g_string[i].setRGB(dim, dim, 0);
+                e_string[i].setRGB(255, 255, 0);
+                b_string[i].setRGB(255, 255, 0);
+                g_string[i].setRGB(255, 255, 0);
             }
         }
     }
 
     if (outline_events_idx >= outline_events_size) {
-//        outline.clear();
+        fill_solid(outline, num_outline_leds, CRGB::Black);
     } else {
         auto const current_outline_step = time_step - current_outline_event.onset + 1;
         switch (current_outline_event.midi_number) {
@@ -158,8 +160,9 @@ void increment_time_step() {
                 break;
             }
             case 76: {
+                FastLED.setBrightness(dim);
                 for (uint32_t i{0u}; i < num_outline_leds; ++i) {
-                    outline[i].setRGB(dim, dim, 0);
+                    outline[i].setRGB(255, 255, 0);
                 }
                 break;
             }
@@ -170,13 +173,9 @@ void increment_time_step() {
 
     ++time_step;
     if (time_step == (current_outline_event.onset + current_outline_event.duration)) {
-//        outline.clear();
         outline_events_idx++;
     }
     if (time_step == current_fret_event.onset + current_fret_event.duration) {
-//        e_string.clear();
-//        g_string.clear();
-//        b_string.clear();
         fret_events_idx++;
         auto const fret_rgb = random(0u, 2u);
         if (fret_rgb == 0) {
@@ -200,19 +199,19 @@ void loop() {
     return;
 }
 
-WheelColor Wheel(unsigned char WheelPos, double brightness) {
-    WheelPos = static_cast<unsigned char>(255 - WheelPos);
+WheelColor Wheel(int WheelPos, double brightness) {
+    WheelPos = 255 - WheelPos;
     if (WheelPos < 85) {
         return WheelColor{static_cast<uint8_t>((255 - WheelPos * 3) * brightness), 0,
-                static_cast<uint8_t>(WheelPos * 3 * brightness)};
+                          static_cast<uint8_t>(WheelPos * 3 * brightness)};
     }
     if (WheelPos < 170) {
         WheelPos -= 85;
         return WheelColor{0, static_cast<uint8_t>(WheelPos * 3 * brightness),
-                static_cast<uint8_t>((255 - WheelPos * 3) * brightness)};
+                          static_cast<uint8_t>((255 - WheelPos * 3) * brightness)};
     }
     WheelPos -= 170;
     return WheelColor{static_cast<uint8_t>(WheelPos * 3 * brightness),
-            static_cast<uint8_t>((255 - WheelPos * 3) * brightness),
-            0};
+                      static_cast<uint8_t>((255 - WheelPos * 3) * brightness),
+                      0};
 }
