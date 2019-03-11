@@ -11,7 +11,7 @@ constexpr auto outline_pin{9u};
 constexpr auto e_string_pin{5u};
 constexpr auto b_string_pin{6u};
 constexpr auto g_string_pin{3u};
-constexpr auto button_pin{7u};
+constexpr auto button_pin{4u};
 
 CRGB outline[num_outline_leds];
 CRGB e_string[num_string_leds];
