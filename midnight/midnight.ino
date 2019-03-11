@@ -66,7 +66,7 @@ void increment_time_step() {
     } else {
         auto const current_fret_step = time_step - current_fret_event.onset + 1;
         for (uint16_t i{0u}; i < num_string_leds; ++i) {
-            auto const c = Wheel(static_cast<unsigned char>(i * 255 / num_string_leds));
+            auto const c = Wheel(static_cast<unsigned char>(i * 255 / num_string_leds), 0.25);
             e_string[i].setRGB(c.r, c.g, c.b);
             g_string[i].setRGB(c.r, c.g, c.b);
             b_string[i].setRGB(c.r, c.g, c.b);

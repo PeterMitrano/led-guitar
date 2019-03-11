@@ -4,7 +4,7 @@ void
 pulse(CRGB *strip, uint16_t step, uint16_t, uint8_t r, uint8_t g, uint8_t b, unsigned int n = 4) {
     auto const intensity = 1;
     for (uint16_t i{0u}; i < num_outline_leds; ++i) {
-        if ((i + step) % n == 0) {
+        if ((i + (step / 2)) % n == 0) {
             strip[i].setRGB(static_cast<uint8_t>(intensity * r),
                             static_cast<uint8_t>(intensity * g),
                             static_cast<uint8_t>(intensity * b));
